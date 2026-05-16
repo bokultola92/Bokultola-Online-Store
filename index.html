@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বকুলতলা অনলাইন শপ</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
+        header { background: #343a40; color: white; text-align: center; padding: 20px; font-size: 24px; font-weight: bold; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; text-align: center; padding: 15px; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .card h3 { margin: 15px 0 10px; color: #333; font-size: 18px; }
+        .card .price { color: #e67e22; font-size: 20px; font-weight: bold; margin-bottom: 15px; }
+        .buy-btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .buy-btn:hover { background: #0056b3; }
+        .loading { text-align: center; font-size: 18px; margin-top: 5px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <header>🛍️ বকুলতলা অনলাইন স্টোর 🛍️</header>
+
+    <div class="container">
+        <h2 style="text-align: center; color: #444;">আমাদের প্রোডাক্টসমূহ</h2>
+        <div id="loading-text" class="loading">প্রোডাক্ট লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
+        <div class="grid" id="product-container"></div>
+    </div>
+
+    <script>
+        // ⚠️ আপনার PHP হোস্টিংয়ের লিঙ্কটি নিচে বসান (যেমন: https://bakultala.000webhostapp.com/)
+        // লিঙ্কের শেষে অবশ্যই products.json থাকতে হবে
+        const jsonUrl = "https://YOUR_PHP_HOSTING_URL/products.json"; 
+
+        async function loadProducts() {
+            try {
+                const response = await fetch(jsonUrl);
+                const products = await response.json();
+                
+                const container = document.getElementById('product-container');
+                document.getElementById('loading-text').style.display = 'none';
+                
+                if(products.length === 0) {
+                    container.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>বর্তমানে কোনো প্রোডাক্ট নেই।</p>";
+                    return;
+                }
+
+                products.forEach(product => {
+                    const card = `
+                        <div class="card">
+                            <img src="${product.image}" alt="${product.name}">
+                            <h3>${product.name}</h3>
+                            <div class="price">৳ ${product.price}</div>
+                            <button class="buy-btn" onclick="alert('অর্ডার করতে আমাদের সাথে যোগাযোগ করুন!')">অর্ডার করুন</button>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            } catch (error) {
+                console.error("Error loading products:", error);
+                document.getElementById('loading-text').innerText = "প্রোডাক্ট লোড করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
+            }
+        }
+
+        // পেজ লোড হলে ফাংশনটি রান করবে
+        loadProducts();
+    </script>
+</body>
+</html>
